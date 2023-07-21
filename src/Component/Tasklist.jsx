@@ -3,6 +3,7 @@ import React, { useState } from "react";
 export default function Tasklist() {
   const [taskData, setTaskData] = useState("");
   const [submittedTasks, setSubmittedTasks] = useState([]);
+  const [updateButton,setUpdateButton]=useState(false);
 
   const submitHandler = (event) => {
     event.preventDefault();
@@ -10,12 +11,19 @@ export default function Tasklist() {
       setSubmittedTasks([...submittedTasks, taskData]);
       setTaskData("");
     }
+    setUpdateButton(false);
   };
   const dltHandler = (id) => {
-    console.log(id);
+    // console.log(id);
+    const updatedTasks = [...submittedTasks];
+    updatedTasks.splice(id, 1);
+    setSubmittedTasks(updatedTasks);
   };
   const editHandler = (id) => {
-    console.log(id);
+    // console.log(id);
+    setUpdateButton(true);
+    setTaskData(submittedTasks[id]);
+    dltHandler(id);
   };
 
   return (
@@ -31,30 +39,30 @@ export default function Tasklist() {
           }}
           required
         />
-        <button>Add Task</button>
+        <button>{updateButton ? "Update Task" : "Add Task"}</button>
       </form>
 
       <div>
         <h3>Submitted Tasks:</h3>
         <ul>
           {submittedTasks.map((task, index) => (
-            <>
-              <li key={index}>{task}</li>
+            <div key={task}>
+              <li>{task}</li>
               <button
                 onClick={() => {
                   dltHandler(index);
                 }}
               >
-                Edit
+                Delete
               </button>
               <button
                 onClick={() => {
                   editHandler(index);
                 }}
               >
-                Delete
+                Edit
               </button>
-            </>
+            </div>
           ))}
         </ul>
       </div>
